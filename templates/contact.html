@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+  <div class="page-banner overlay-dark bg-image" style="background-image: url({% static '/assets/img/bg_image_1.jpg' %});">
+    <div class="banner-section">
+      <div class="container text-center wow fadeInUp">
+        <nav aria-label="Breadcrumb">
+          <ol class="breadcrumb breadcrumb-dark bg-transparent justify-content-center py-0 mb-2">
+            <li class="breadcrumb-item"><a href="{% url 'index'%}">Home</a></li>
+            <li class="breadcrumb-item active" aria-current="page">Contact</li>
+          </ol>
+        </nav>
+        <h1 class="font-weight-normal">Contact</h1>
+      </div> <!-- .container -->
+    </div> <!-- .banner-section -->
+  </div> <!-- .page-banner -->
+
+  <div class="page-section">
+    <div class="container">
+      <h1 class="text-center wow fadeInUp">Get in Touch</h1>
+
+      <form  id="contactForm" method="POST" action="{% url 'contact_form'%}" class="contact-form mt-5">
+           {%csrf_token%}
+        <div class="row mb-3">
+          <div class="col-sm-6 py-2 wow fadeInLeft">
+            <label for="fullName">Name</label>
+            <input type="text" id="fullName" name="full_name" class="form-control" placeholder="Full name..">
+          </div>
+          <div class="col-sm-6 py-2 wow fadeInRight">
+            <label for="emailAddress">Email</label>
+            <input type="text" id="emailAddress" name="email" class="form-control" placeholder="Email address..">
+          </div>
+          <div class="col-12 py-2 wow fadeInUp">
+            <label for="subject">Subject</label>
+            <input type="text" id="subject" name="subject" class="form-control" placeholder="Enter subject..">
+          </div>
+          <div class="col-12 py-2 wow fadeInUp">
+            <label for="message">Message</label>
+            <textarea id="message"  name="message" class="form-control" rows="8" placeholder="Enter Message.."></textarea>
+          </div>
+        </div>
+{#        <button type="submit" class="btn btn-primary wow zoomIn">Send Message</button>#}
+          <input type="submit" name="contact-submit" class="btn btn-success btn-lg" />
+      </form>
+    </div>
+  </div>
+ {% block javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // catch the form's submit event
+            $('#contactForm').submit(function () {
+                // create an AJAX call
+                $.ajax({
+                    data: $(this).serialize(), // get the form data
+                    type: $(this).attr('method'), // GET or POST
+                    url: "{% url 'contact_form' %}",
+                    // on success
+                    success: function (response) {
+                        alert("Thankyou for reaching us out " + response.name);
+                        location.reload();
+                    },
+                    // on error
+                    error: function (response) {
+                        // alert the error if any error occured
+                        alert(response.responseJSON.errors);
+                        console.log(response.responseJSON.errors)
+                    }
+                });
+                return false;
+            });
+        })
+    </script>
+    {% endblock javascript %}
+
+
+
+
+  <div class="maps-container wow fadeInUp">
+    <div id="google-maps"></div>
+  </div>
+
+
+
+<script src="{% static '/assets/js/google-maps.js' %}"></script>
+
+<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAIA_zqjFMsJM_sxP9-6Pde5vVCTyJmUHM&callback=initMap"></script>
+
+{% endblock %}
